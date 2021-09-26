@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Titulo Documento</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/3.9.0/tf.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 mx-auto">
+        <div class="text-center">
+          <h1>Conversor de Pulgadas a Millimetros Neuronal</h1>
+          <input type="text" class="form-control form-control-lg" placeholder="inches" aria-label="inches" id="input_inches" value="10"
+            onkeyup="run()">
+          <br>
+          <span class="display-6" id="input_millimiters"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documento HTML5 -->
+  <script>
+    async function run() {
+      // Load the model from the CDN.
+      const model = await tf.loadLayersModel("http://localhost:8000/model.json");
+
+      // Print out the architecture of the loaded model.
+      // This is useful to see that it matches what we built in Python.
+      //console.log(model.summary());
+
+      // Create a 1 dimensional tensor with our test value.
+      val = parseFloat(document.getElementById('input_inches').value);
+      const input = tf.tensor1d([val]);
+
+      // Actually make the prediction.
+      const result = model.predict(input);
+
+      // Grab the result of prediction using dataSync method
+      // which ensures we do this synchronously.
+
+      document.getElementById('input_millimiters').innerText = result.dataSync()[0].toFixed(2) + " mm";
+
+    }
+
+    // Call our function to start the prediction!
+    run();
+  </script>
+</body>
+
+</html>
